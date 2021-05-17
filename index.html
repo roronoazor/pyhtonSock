@@ -44,11 +44,11 @@
 
     $('form').on('submit', function(e) {
         e.preventDefault();
-           let socket_url = "ws://127.0.0.1:3000"
-        var socket = new WebSocket(socket_url);
-        socket.onopen = function(event) {
         var username = $("#username").val();
         var password = $("#password").val();
+        let socket_url = `ws://127.0.0.1:3000?username=${username}&password=${password}&`
+        var socket = new WebSocket(socket_url);
+        socket.onopen = function(event) {
         console.log(username, password)
         const submitData = {username, password}
         console.log(submitData)

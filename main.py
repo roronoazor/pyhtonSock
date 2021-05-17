@@ -1,3 +1,40 @@
+
+import socket
+import re
+
+HOST = "localhost"
+PORT = 3000
+search_username_string = '(?<=username=)([^&]*)(?=&)?'
+search_password_string = '(?<=password=)([^&]*)(?=&)?'
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.bind((HOST, PORT))
+    s.listen()
+    while True:
+        conn, addr = s.accept()
+        with conn:
+            print('Connected by', addr)
+            request = conn.recv(1024)
+            if not request:
+                break
+            request = str(request)
+            username_in_list = re.findall(search_username_string, request)
+            password_in_list = re.findall(search_password_string, request)
+            print(username_in_list, password_in_list)
+            print('Content = %s' % request)
+
+            # write this data to a python file
+            with open("config.py", "w+") as file:
+                file.write("username: %s" % (username_in_list[0] if username_in_list else "Error"))
+                file.write("\n")
+                file.write("password: %s" % (password_in_list[0] if password_in_list else "Error"))
+
+        # close the socket
+        conn.close()
+
+
+
+"""
 import asyncio
 import websockets
 import os
@@ -37,3 +74,4 @@ print("socket started")
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
+"""
